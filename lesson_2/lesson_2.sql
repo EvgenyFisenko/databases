@@ -1,0 +1,13 @@
+DROP DATABASE IF EXISTS example;
+CREATE DATABASE example;
+
+USE example;
+DROP TABLE IF EXISTS users;
+CREATE TABLE users(
+    id INT,
+    name CHAR(15)
+);
+
+SHOW DATABASES;
+SHOW TABLES FROM example;
+DESCRIBE users;
