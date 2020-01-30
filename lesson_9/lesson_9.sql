@@ -95,9 +95,7 @@ VALUES
 DROP TRIGGER IF EXISTS before_update_products;
 CREATE TRIGGER before_update_products BEFORE UPDATE ON products
 FOR EACH ROW BEGIN
-    IF NEW.name IS NULL AND NEW.description IS NULL
-        OR OLD.name IS NULL AND NEW.name IS NULL AND NEW.description IS NULL
-        OR OLD.description IS NULL AND NEW.description IS NULL AND NEW.name IS NULL THEN
+    IF NEW.name IS NULL AND NEW.description IS NULL THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Name & Description cant be NULL';
     END IF;
 END;
