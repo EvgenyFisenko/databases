@@ -1,0 +1,539 @@
+-- MySQL dump 10.13  Distrib 8.0.18, for Win64 (x86_64)
+--
+-- Host: localhost    Database: shop
+-- ------------------------------------------------------
+-- Server version	8.0.18
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `catalogs`
+--
+
+DROP TABLE IF EXISTS `catalogs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `catalogs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT 'Название раздела',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `unique_name` (`name`(10))
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Разделы интернет-магазина';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `catalogs`
+--
+
+LOCK TABLES `catalogs` WRITE;
+/*!40000 ALTER TABLE `catalogs` DISABLE KEYS */;
+INSERT INTO `catalogs` VALUES (1,'Процессоры'),(2,'Материнские платы'),(3,'Видеокарты'),(4,'Жесткие диски'),(5,'Оперативная память'),(8,'Звуковые карты');
+/*!40000 ALTER TABLE `catalogs` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `after_insert_catalogs` AFTER INSERT ON `catalogs` FOR EACH ROW BEGIN
+    INSERT INTO logs(table_name, type, target_table_id, target_table_name) VALUES
+    ('catalogs','INSERT', NEW.id, NEW.name);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `after_update_catalogs` AFTER UPDATE ON `catalogs` FOR EACH ROW BEGIN
+    INSERT INTO logs(table_name, type, target_table_id, target_table_name) VALUES
+    ('catalogs','UPDATE', NEW.id, NEW.name);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `cities`
+--
+
+DROP TABLE IF EXISTS `cities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cities` (
+  `label` varchar(255) DEFAULT NULL COMMENT 'Направление',
+  `name` varchar(255) DEFAULT NULL COMMENT 'Описане направоения на русском'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cities`
+--
+
+LOCK TABLES `cities` WRITE;
+/*!40000 ALTER TABLE `cities` DISABLE KEYS */;
+INSERT INTO `cities` VALUES ('moscow','Москва'),('irkutsk','Иркутск'),('novgorod','Новгород'),('kazan','Казань'),('omsk','Омск');
+/*!40000 ALTER TABLE `cities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `discounts`
+--
+
+DROP TABLE IF EXISTS `discounts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `discounts` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `product_id` int(10) unsigned DEFAULT NULL,
+  `discount` float unsigned DEFAULT NULL COMMENT 'Величина скидки от 0.0 до 1.0',
+  `started_at` datetime DEFAULT NULL,
+  `finished_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `index_of_user_id` (`user_id`),
+  KEY `index_of_product_id` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Скидки';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `discounts`
+--
+
+LOCK TABLES `discounts` WRITE;
+/*!40000 ALTER TABLE `discounts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `discounts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `flights`
+--
+
+DROP TABLE IF EXISTS `flights`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `flights` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `flight_from` varchar(255) DEFAULT NULL COMMENT 'Отправление',
+  `flight_to` varchar(255) DEFAULT NULL COMMENT 'Прибытие',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `flights`
+--
+
+LOCK TABLES `flights` WRITE;
+/*!40000 ALTER TABLE `flights` DISABLE KEYS */;
+INSERT INTO `flights` VALUES (1,'moscow','omsk'),(2,'novgorod','kazan'),(3,'irkutsk','moscow'),(4,'omsk','irkutsk'),(5,'moscow','kazan');
+/*!40000 ALTER TABLE `flights` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logs`
+--
+
+DROP TABLE IF EXISTS `logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `table_name` varchar(255) DEFAULT NULL COMMENT 'Название целевой таблицы',
+  `type` varchar(255) DEFAULT NULL COMMENT 'Тип операции',
+  `target_table_id` int(11) DEFAULT NULL COMMENT 'Поле id в целевой таблице',
+  `target_table_name` varchar(255) DEFAULT NULL COMMENT 'Поле name целевой таблицы',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `id` (`id`)
+) ENGINE=ARCHIVE AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='insert/update log for users, catalogs, products';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logs`
+--
+
+LOCK TABLES `logs` WRITE;
+/*!40000 ALTER TABLE `logs` DISABLE KEYS */;
+INSERT INTO `logs` VALUES (1,'users','INSERT',26,'Геннадий A','2020-02-05 17:52:51'),(2,'users','INSERT',27,'Наталья A','2020-02-05 17:52:51'),(3,'catalogs','INSERT',8,'Звуковые карты','2020-02-05 17:52:51'),(4,'products','INSERT',17,'Intel Core i7','2020-02-05 17:52:51'),(5,'users','UPDATE',5,'Новое имя','2020-02-05 17:52:51');
+/*!40000 ALTER TABLE `logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `orders`
+--
+
+DROP TABLE IF EXISTS `orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `orders` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `index_of_user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Заказы';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orders`
+--
+
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (1,1,'2020-01-21 14:25:29','2020-01-21 14:25:29'),(2,2,'2020-01-21 14:25:29','2020-01-21 14:25:29'),(3,3,'2020-01-21 14:25:29','2020-01-21 14:25:29'),(4,4,'2020-01-21 14:25:29','2020-01-21 14:25:29'),(5,1,'2020-01-21 14:25:41','2020-01-21 14:25:41');
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `orders_products`
+--
+
+DROP TABLE IF EXISTS `orders_products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `orders_products` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` int(10) unsigned DEFAULT NULL,
+  `product_id` int(10) unsigned DEFAULT NULL,
+  `total` int(10) unsigned DEFAULT '1' COMMENT 'Количество заказанных товарных позиций',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Состав заказа';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orders_products`
+--
+
+LOCK TABLES `orders_products` WRITE;
+/*!40000 ALTER TABLE `orders_products` DISABLE KEYS */;
+INSERT INTO `orders_products` VALUES (1,1,1,7890,'2020-01-21 14:29:35','2020-01-21 14:29:35'),(2,2,2,12700,'2020-01-21 14:29:59','2020-01-21 14:29:59'),(3,3,3,4780,'2020-01-21 14:30:07','2020-01-21 14:30:07'),(4,4,4,7120,'2020-01-21 14:30:27','2020-01-21 14:30:27'),(5,5,5,19310,'2020-01-21 14:30:39','2020-01-21 14:30:39');
+/*!40000 ALTER TABLE `orders_products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `products`
+--
+
+DROP TABLE IF EXISTS `products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `products` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT 'Название',
+  `description` text COMMENT 'Описание',
+  `price` decimal(11,2) DEFAULT NULL COMMENT 'Цена',
+  `catalog_id` int(10) unsigned DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `index_of_catalog_id` (`catalog_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Товарные позиции';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `products`
+--
+
+LOCK TABLES `products` WRITE;
+/*!40000 ALTER TABLE `products` DISABLE KEYS */;
+INSERT INTO `products` VALUES (1,'Intel Core i3-8100','Процессор для настольных персональных компьютеров, основанных на платформе Intel.',7890.00,1,'2020-01-14 16:04:58','2020-01-14 16:04:58'),(2,'Intel Core i5-7400','Процессор для настольных персональных компьютеров, основанных на платформе Intel.',12700.00,1,'2020-01-14 16:04:58','2020-01-14 16:04:58'),(3,'AMD FX-8320E','Процессор для настольных персональных компьютеров, основанных на платформе AMD.',4780.00,1,'2020-01-14 16:04:58','2020-01-14 16:04:58'),(4,'AMD FX-8320','Процессор для настольных персональных компьютеров, основанных на платформе AMD.',7120.00,1,'2020-01-14 16:04:58','2020-01-14 16:04:58'),(5,'ASUS ROG MAXIMUS X HERO','Материнская плата ASUS ROG MAXIMUS X HERO, Z370, Socket 1151-V2, DDR4, ATX',19310.00,2,'2020-01-14 16:04:58','2020-01-14 16:04:58'),(6,'Gigabyte H310M S2H','Материнская плата Gigabyte H310M S2H, H310, Socket 1151-V2, DDR4, mATX',4790.00,2,'2020-01-14 16:04:58','2020-01-14 16:04:58'),(7,'MSI B250M GAMING PRO','Материнская плата MSI B250M GAMING PRO, B250, Socket 1151, DDR4, mATX',5060.00,2,'2020-01-14 16:04:58','2020-01-14 16:04:58'),(13,NULL,'description',7890.00,1,'2020-01-29 13:31:19','2020-01-29 13:56:28'),(14,'name',NULL,7890.00,1,'2020-01-29 13:32:43','2020-01-29 13:51:50'),(16,'Intel Core i7','Процессор для настольных персональных компьютеров, основанных на платформе Intel.',9999.00,1,'2020-02-05 11:23:12','2020-02-05 11:23:12'),(17,'Intel Core i7','Процессор для настольных персональных компьютеров, основанных на платформе Intel.',9999.00,1,'2020-02-05 17:52:51','2020-02-05 17:52:51');
+/*!40000 ALTER TABLE `products` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_products` BEFORE INSERT ON `products` FOR EACH ROW BEGIN
+    IF NEW.name IS NULL AND NEW.description IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Name & Description cant be NULL';
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `after_insert_products` AFTER INSERT ON `products` FOR EACH ROW BEGIN
+    INSERT INTO logs(table_name, type, target_table_id, target_table_name) VALUES
+    ('products', 'INSERT', NEW.id, NEW.name);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_products` BEFORE UPDATE ON `products` FOR EACH ROW BEGIN
+    IF NEW.name IS NULL AND NEW.description IS NULL
+THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Name & Description cant be NULL';
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `after_update_products` AFTER UPDATE ON `products` FOR EACH ROW BEGIN
+    INSERT INTO logs(table_name, type, target_table_id, target_table_name) VALUES
+    ('products', 'UPDATE', NEW.id, NEW.name);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Temporary view structure for view `products_catalogs_view`
+--
+
+DROP TABLE IF EXISTS `products_catalogs_view`;
+/*!50001 DROP VIEW IF EXISTS `products_catalogs_view`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `products_catalogs_view` AS SELECT 
+ 1 AS `product_name`,
+ 1 AS `catalog_name`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `storehouses`
+--
+
+DROP TABLE IF EXISTS `storehouses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `storehouses` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT 'Название',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Склады';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `storehouses`
+--
+
+LOCK TABLES `storehouses` WRITE;
+/*!40000 ALTER TABLE `storehouses` DISABLE KEYS */;
+/*!40000 ALTER TABLE `storehouses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `storehouses_products`
+--
+
+DROP TABLE IF EXISTS `storehouses_products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `storehouses_products` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `storehouse_id` int(10) unsigned DEFAULT NULL,
+  `product_id` int(10) unsigned DEFAULT NULL,
+  `value` int(10) unsigned DEFAULT NULL COMMENT 'Запас товарной позиции на складе',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Запасы на складе';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `storehouses_products`
+--
+
+LOCK TABLES `storehouses_products` WRITE;
+/*!40000 ALTER TABLE `storehouses_products` DISABLE KEYS */;
+INSERT INTO `storehouses_products` VALUES (1,1,2,0,'2020-01-14 19:29:54','2020-01-14 19:29:54'),(2,1,2,2500,'2020-01-14 19:29:54','2020-01-14 19:29:54'),(3,1,2,0,'2020-01-14 19:29:54','2020-01-14 19:29:54'),(4,1,2,30,'2020-01-14 19:29:54','2020-01-14 19:29:54'),(5,1,2,500,'2020-01-14 19:29:54','2020-01-14 19:29:54'),(6,1,2,1,'2020-01-14 19:29:54','2020-01-14 19:29:54');
+/*!40000 ALTER TABLE `storehouses_products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT 'Имя покупателя',
+  `birthday_at` date DEFAULT NULL COMMENT 'Дата рождения',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Покупатели';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (2,'Наталья','1984-11-12','2016-09-21 08:10:00','2019-10-20 08:10:00'),(3,'Александр','1985-05-20','2015-08-22 08:10:00','2019-10-20 08:10:00'),(4,'Сергей','1988-02-14','2014-07-23 08:10:00','2019-10-20 08:10:00'),(5,'Новое имя','1998-01-12','2013-06-24 08:10:00','2020-02-05 17:52:51'),(6,'Мария','1992-08-29','2012-05-25 08:10:00','2019-10-20 08:10:00'),(7,'Гена','1990-10-05','2020-01-14 19:30:33','2020-01-14 19:30:33'),(8,'Ната','1984-11-12','2020-01-14 19:30:33','2020-01-14 19:30:33'),(9,'Саша','1985-05-20','2020-01-14 19:30:33','2020-01-14 19:30:33'),(10,'Серый','1988-02-14','2020-01-14 19:30:33','2020-01-14 19:30:33'),(11,'Геннадий','1993-10-05','2020-02-05 10:57:05','2020-02-05 10:57:05'),(12,'Наталья','1986-11-12','2020-02-05 10:57:05','2020-02-05 10:57:05'),(22,'Геннадий A','1990-10-05','2020-02-05 11:23:12','2020-02-05 11:23:12'),(23,'Наталья A','1984-11-12','2020-02-05 11:23:12','2020-02-05 11:23:12'),(24,'Геннадий A','1990-10-05','2020-02-05 17:51:44','2020-02-05 17:51:44'),(25,'Наталья A','1984-11-12','2020-02-05 17:51:44','2020-02-05 17:51:44'),(26,'Геннадий A','1990-10-05','2020-02-05 17:52:51','2020-02-05 17:52:51'),(27,'Наталья A','1984-11-12','2020-02-05 17:52:51','2020-02-05 17:52:51');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `after_insert_users` AFTER INSERT ON `users` FOR EACH ROW BEGIN
+    INSERT INTO logs(table_name, type, target_table_id, target_table_name) VALUES
+    ('users','INSERT', NEW.id, NEW.name);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `after_update_users` AFTER UPDATE ON `users` FOR EACH ROW BEGIN
+    INSERT INTO logs(table_name, type, target_table_id, target_table_name) VALUES
+    ('users','UPDATE', NEW.id, NEW.name);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `users1`
+--
+
+DROP TABLE IF EXISTS `users1`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users1` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT 'Имя покупателя',
+  `birthday_at` date DEFAULT NULL COMMENT 'Дата рождения',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Покупатели';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users1`
+--
+
+LOCK TABLES `users1` WRITE;
+/*!40000 ALTER TABLE `users1` DISABLE KEYS */;
+INSERT INTO `users1` VALUES (1,'JOHN DOE 7532','2005-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(2,'JOHN DOE 3267','2018-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(3,'JOHN DOE 4285','1994-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(4,'JOHN DOE 2021','2011-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(5,'JOHN DOE 9839','1992-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(6,'JOHN DOE 8753','2006-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(7,'JOHN DOE 7754','2007-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(8,'JOHN DOE 8559','1991-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(9,'JOHN DOE 2844','2005-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(10,'JOHN DOE 7011','1991-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(11,'JOHN DOE 7612','1994-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(12,'JOHN DOE 1533','2017-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(13,'JOHN DOE 633','2020-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(14,'JOHN DOE 8221','2017-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(15,'JOHN DOE 517','1992-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(16,'JOHN DOE 5831','2018-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(17,'JOHN DOE 6142','1995-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(18,'JOHN DOE 4233','2004-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(19,'JOHN DOE 5151','1993-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(20,'JOHN DOE 9772','2015-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(21,'JOHN DOE 9310','2016-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(22,'JOHN DOE 8940','2019-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(23,'JOHN DOE 6077','1995-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(24,'JOHN DOE 5015','1993-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(25,'JOHN DOE 592','2004-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(26,'JOHN DOE 6124','2009-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(27,'JOHN DOE 1021','2010-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(28,'JOHN DOE 4289','2017-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(29,'JOHN DOE 2301','1995-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(30,'JOHN DOE 5125','2019-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(31,'JOHN DOE 6679','2014-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(32,'JOHN DOE 770','1998-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(33,'JOHN DOE 4524','2019-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(34,'JOHN DOE 9032','2010-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(35,'JOHN DOE 896','2009-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(36,'JOHN DOE 5732','1998-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(37,'JOHN DOE 853','2016-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(38,'JOHN DOE 4623','1994-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(39,'JOHN DOE 161','2007-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(40,'JOHN DOE 1467','2008-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(41,'JOHN DOE 6428','1992-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(42,'JOHN DOE 8934','2003-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(43,'JOHN DOE 1888','2014-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(44,'JOHN DOE 5481','2018-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(45,'JOHN DOE 7148','2010-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(46,'JOHN DOE 6484','2016-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(47,'JOHN DOE 8875','1992-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(48,'JOHN DOE 274','2011-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(49,'JOHN DOE 5325','2000-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(50,'JOHN DOE 8717','2012-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(51,'JOHN DOE 7695','2020-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(52,'JOHN DOE 7768','1996-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(53,'JOHN DOE 8333','2000-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(54,'JOHN DOE 8421','2014-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(55,'JOHN DOE 4999','1994-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(56,'JOHN DOE 9206','1992-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(57,'JOHN DOE 9920','2017-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(58,'JOHN DOE 5629','2006-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(59,'JOHN DOE 7681','2010-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(60,'JOHN DOE 5284','2004-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(61,'JOHN DOE 1275','2020-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(62,'JOHN DOE 6678','2011-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(63,'JOHN DOE 5407','1997-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(64,'JOHN DOE 2636','1991-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(65,'JOHN DOE 1431','1998-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(66,'JOHN DOE 3464','2006-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(67,'JOHN DOE 2946','2018-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(68,'JOHN DOE 4801','2015-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(69,'JOHN DOE 4717','1996-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(70,'JOHN DOE 6406','1997-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(71,'JOHN DOE 9271','2011-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(72,'JOHN DOE 8502','2012-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(73,'JOHN DOE 8108','2013-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(74,'JOHN DOE 7533','2019-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(75,'JOHN DOE 168','1993-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(76,'JOHN DOE 5388','1992-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(77,'JOHN DOE 862','2002-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(78,'JOHN DOE 7896','2017-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(79,'JOHN DOE 2269','1997-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(80,'JOHN DOE 2060','2000-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(81,'JOHN DOE 8713','2013-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(82,'JOHN DOE 7022','1999-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(83,'JOHN DOE 5005','2010-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(84,'JOHN DOE 1900','1992-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(85,'JOHN DOE 1062','1999-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(86,'JOHN DOE 3072','2010-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(87,'JOHN DOE 8822','2011-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(88,'JOHN DOE 9968','1991-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(89,'JOHN DOE 9997','2020-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(90,'JOHN DOE 241','2017-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(91,'JOHN DOE 4605','1991-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(92,'JOHN DOE 5328','1999-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(93,'JOHN DOE 9793','1998-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(94,'JOHN DOE 8123','1996-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(95,'JOHN DOE 6206','2000-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(96,'JOHN DOE 4801','2009-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(97,'JOHN DOE 5370','2006-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(98,'JOHN DOE 8821','1993-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(99,'JOHN DOE 9271','1994-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31'),(100,'JOHN DOE 6759','1999-02-05','2020-02-05 12:14:31','2020-02-05 12:14:31');
+/*!40000 ALTER TABLE `users1` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Final view structure for view `products_catalogs_view`
+--
+
+/*!50001 DROP VIEW IF EXISTS `products_catalogs_view`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `products_catalogs_view` (`product_name`,`catalog_name`) AS select `p`.`name` AS `name`,`c`.`name` AS `name` from (`products` `p` left join `catalogs` `c` on((`p`.`catalog_id` = `c`.`id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2020-02-06 13:28:48
